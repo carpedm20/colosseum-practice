@@ -1,0 +1,124 @@
+<script type="text/javascript"> 
+
+var border_color = '#378006'
+
+$(document).ready(function() {
+  var options = "";
+
+  var student_list = [];
+  var email_list = [];
+
+  for (var i=0; i<student_list.length; i++) {
+    options += (i+1) + " : " + student_list[i] + "  ";
+  }
+  
+  var date = new Date();
+  var d = date.getDate();
+  var m = date.getMonth();
+  var y = date.getFullYear();
+  
+  var calendar = $('#calendar').fullCalendar({
+    header: {
+      left: 'prev,next today',
+      center: 'title',
+      //right: 'month',//,agendaWeek'
+    },
+
+    selectable: true,
+    selectHelper: true,
+    eventColor: border_color,
+
+    //editable: true,
+
+    eventClick: function(calEvent, jsEvent, view) {
+      if (calEvent.finished) {
+        $.ajax({
+          url: '/s/'+calEvent.unique_id+'/event/unfinish/'+calEvent.id+'/',
+          type: 'POST',
+          data: { id: calEvent.id },
+          success: function(data) { location.reload() },
+        });
+        /*jQuery.post(
+          '/s/'+calEvent.unique_id+'/event/unfinish/'+calEvent.id+'/',
+          {
+            id: calEvent.id,
+          },
+          location.reload()
+        );*/
+      } else {
+        $.ajax({
+          url: '/s/'+calEvent.unique_id+'/event/finish/'+calEvent.id+'/',
+          type: 'POST',
+          data: { id: calEvent.id },
+          success: function(data) { location.reload() },
+        });
+        /*jQuery.post(
+          '/s/'+calEvent.unique_id+'/event/finish/'+calEvent.id+'/',
+          {
+            id: calEvent.id,
+          },
+          location.reload()
+        );*/
+      }
+    },
+    events: function(start, end, callback) {
+      $.ajax({
+        url: '{% url 'get_event' study_group_id='0' %}',
+        dataType: 'json',
+        data: {
+          // our hypothetical feed requires UNIX timestamps
+          //start: Math.round(start.getTime() / 1000),
+          //end: Math.round(end.getTime() / 1000)
+        },
+        success: function(data) {
+          var events = [];
+          $(data).each(function() {
+            var student_list = $(this).attr('student_list');
+            student_list = student_list.split(',')
+
+            var student_list_as_string = '';
+
+            for(var i=0; i<student_list.length; i++) {
+              student_list[i] = student_list[i].split('@')[0];
+              student_list_as_string += student_list[i] + ", ";
+            }
+
+            if (student_list.length > 0)
+              student_list_as_string = student_list_as_string.substr(0, student_list_as_string.length - 2);
+
+            if ($(this).attr('finished')) {
+              events.push({
+                // title: $(this).attr('title') + "\r\n" + student_list,
+                id: $(this).attr('id'),
+                unique_id: $(this).attr('unique_id'),
+                title: $(this).attr('title') + " - " + student_list_as_string,
+                start: $(this).attr('start'),
+                end: $(this).attr('end'),
+                allDay: $(this).attr('allDay'),
+                //student_list: $(this).attr('student_list'),
+                className: 'event-finished',
+                finished: true,
+              });
+            } else {
+              events.push({
+                // title: $(this).attr('title') + "\r\n" + student_list,
+                id: $(this).attr('id'),
+                unique_id: $(this).attr('unique_id'),
+                title: $(this).attr('title') + " - " + student_list_as_string,
+                start: $(this).attr('start'),
+                end: $(this).attr('end'),
+                allDay: $(this).attr('allDay'),
+                //student_list: $(this).attr('student_list'),
+                finished: false,
+              });
+            }
+          });
+          callback(events);
+        }
+      });
+    },
+  });
+  
+});
+
+</script>

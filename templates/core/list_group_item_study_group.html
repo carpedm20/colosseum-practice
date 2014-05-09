@@ -1,0 +1,68 @@
+{% if group.is_private and user.student not in group.student_set.all %}
+
+{% else %}
+  {% if group.is_private %}
+    <div class="list-group-item list-group-item-private">
+  {% else%}
+    <div class="list-group-item">
+  {% endif %}
+    <form role="form" action="{% url 'core:like_study_group' %}" method="post">
+      {% csrf_token %}
+      <input type="hidden" value="{{ group.unique_id}}" name="group_unique_id">
+      {% if user.student in group.liked_student_set.all %}
+        <button type="submit" class="btn btn-info btn-lg pull-right">
+          <span class="glyphicon glyphicon-heart"></span> Liked
+          <span class="badge">{{ group.liked_student_set.count }}</span>
+      {% else %}
+        <button type="submit" class="btn btn-primary btn-lg pull-right">
+          <span class="glyphicon glyphicon-heart"></span> Like?
+          <span class="badge">{{ group.liked_student_set.count }}</span>
+      {% endif %}
+      </button>
+    </form>
+
+    <form role="form" action="{% url 'core:join_study_group' %}" method="post">
+      {% csrf_token %}
+      <input type="hidden" value="{{ group.unique_id}}" name="group_unique_id">
+      {% if user.student in group.student_set.all %}
+        <button type="submit" class="group-join-btn btn btn-success btn-lg pull-right" style="margin-right: 10px;">
+          Joined
+      {% else %}
+        <button type="submit" class="group-join-btn btn btn-primary btn-lg pull-right" style="margin-right: 10px;">
+          Join
+      {% endif %}
+      </button>
+    </form>
+
+    <h4 class="list-group-item-heading">
+      <a href="{% url 'core:view_study_group' group.unique_id %}">
+        {% if group.is_private and user.student in group.student_set.all %}
+          <span class="glyphicon glyphicon-eye-close"></span>
+        {% else %}
+          <span class="glyphicon glyphicon-eye-open"></span>
+        {% endif %}
+        {{ group.name }}
+      </a>
+    </h4>
+    <p class="list-group-item-text">
+      {{ group.details }} | 그룹장 :
+      <a href="{% url 'account:view_profile' %}?user_id={{ group.creator.user.username }}">
+        {% if group.creator == user.student %}
+          <span class="badge badge-me">{{ group.creator.get_id }}</span>
+        {% elif group.creator in user.student.friends.all %}
+          <span class="badge badge-friend">{{ group.creator.get_id }}</span>
+        {% else %}
+          <span class="badge">{{ group.creator.get_id }}</span>
+        {% endif %}
+      </a>
+      {% if group.tag_set.all.count > 0 %}
+        | 태그 :
+        {% for tag in group.tag_set.all %}
+          <a href="{% url 'core:search_study_group_with_tag' %}?search_tag={{ tag }}"<span class="badge">{{ tag }}</span></a>,
+        {% endfor %}
+      {% endif %}
+    </p>
+    <!--<span class="glyphicon glyphicon-chevron-right"></span>
+    <span class="badge">{{ group.student_set.all | length }}</span>-->
+  </div>
+{% endif %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content_with_nav %}
+
+    <div class="container-fluid">
+      <div class="row">
+        {% include "navbar.html" %}
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          {% if student == None %}
+            <div class="text-center">
+              <br />
+              <h1 style="font-family: 'Hanna', serif;">유저 검색 결과 없음 :(</h1>
+              <br />
+              <br />
+              <br />
+              <div class="well">
+              <h1 style="font-family: 'Nanum Pen Script', serif; font-size: 50px;">{{ say }}</h1>
+              </div>
+            </div> 
+          {% else %}
+            <div class="well">
+              <img src="{{ student.gravatar_url }}" />
+              {{ student.user.username }}
+              <a href="#">{{ student.school }}</a>
+            </div>
+
+            {% include 'core/list_group_event.html' with student=student %}
+
+            <div class="list-group">
+              <div class="list-group-item active">
+                <h4 class="list-group-item-heading">
+                  <strong style="color:white;">가입된 스터디 그룹</strong>
+                </h4>
+              </div>
+              {% for group in student.study_group_set.all %}
+                {% include 'core/list_group_item_study_group.html' %}
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+
+{% endblock %}

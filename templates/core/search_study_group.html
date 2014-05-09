@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content_with_nav %}
+
+  <link rel="stylesheet" href="http://fonts.googleapis.com/earlyaccess/nanumpenscript.css" type="text/css" />
+
+    <div class="container-fluid">
+      <div class="row">
+        {% include "navbar.html" %}
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <!--<h1 class="page-header">Welcome {{ user.username }}!</h1>-->
+
+          <div class="text-center">
+            {% if search_query %}
+              <h1 style="font-family: 'Hanna', serif; font-size: 50px;">"{{ search_query }}" 검색 결과</h1>
+            {% elif search_tag %}
+              <h1 style="font-family: 'Hanna', serif; font-size: 50px;">태그 "{{ search_tag }}" 검색 결과</h1>
+            {% endif %}
+          </div>
+
+          {% if study_group_list.count == 0 %}
+            <div class="text-center">
+              <br />
+              <h1 style="font-family: 'Hanna', serif;">결과 없음 :(</h1>
+              <br />
+              <br />
+              <br />
+              <div class="well">
+              <h1 style="font-family: 'Nanum Pen Script', serif; font-size: 50px;">{{ say }}</h1>
+              </div>
+            </div> 
+          {% else %}
+            <div class="list-group">
+              <div class="list-group-item active">
+                <h4 class="list-group-item-heading">
+                  Study Group list
+                </h4>
+              </div>
+              {% for group in study_group_list %}
+                {% include 'core/list_group_item_study_group.html' %}
+              {% endfor %}
+            </div>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+
+{% endblock %}

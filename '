@@ -1,0 +1,51 @@
+{{ student }}
+<div class="list-group">
+  <div class="list-group-item active">
+    <h4 class="list-group-item-heading">
+      To-do
+    </h4>
+  </div>
+  <div class="list-group-item">
+    <div class="text-center">
+      {% if event_finished_percent == -1 %}
+        <p>할일이 없어요 :|</p>
+      {% elif event_finished_percent != 100 %}
+        <p>아직 할일이 남았어요 :(</p>
+      {% else %}
+        <p>할일을 모두 끝내셨군요 :)</p>
+      {% endif %}
+    </div>
+    <div class="progress">
+      {% if event_finished_percent != 100 %}
+        <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{ finished_event_count }}" aria-valuemin="0" aria-valuemax="{{ total_event_count }}" style="width: {{ event_finished_percent }}%;">
+      {% else %}
+        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ finished_event_count }}" aria-valuemin="0" aria-valuemax="{{ total_event_count }}" style="width: {{ event_finished_percent }}%;">
+      {% endif %}
+        <span class="sr-only">60% Complete</span>
+      </div>
+    </div>
+  </div>
+  {% for event in student.assigned_to.all %}
+    <div class="list-group-item">
+      {% if student in event.finished_student.all %}
+        <button type="button" class="btn btn-success btn-lg pull-right" onclick="location.href='{% url 'unfinish_event' study_group_id=event.study_group.unique_id event_id=event.id %}'">
+          <span class="glyphicon glyphicon-ok"></span> Done
+        </button>
+      {% else %}
+        <button type="button" class="btn btn-primary btn-lg pull-right" onclick="location.href='{% url 'finish_event' study_group_id=event.study_group.unique_id event_id=event.id %}'">
+          Finished?
+        </button>
+      {% endif %}
+      <h4 class="list-group-item-heading">
+        <a href="{% url 'core:view_study_group' event.study_group.unique_id %}"> {{ event.name }} </a>
+      </h4>
+      <p class="list-group-item-text">
+        {% if event.is_all_day %}
+          {{ event.get_all_day }} |
+        {% else %}
+          {{ event.get_start_as_korean }} ~ {{ event.get_end_as_korean }} |
+        {% endif %}
+        <a href="{% url 'core:view_study_group' event.study_group.unique_id %}">{{ event.study_group }}</a>
+    </div>
+  {% endfor %}
+</div>

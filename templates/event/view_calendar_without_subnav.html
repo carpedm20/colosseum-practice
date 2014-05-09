@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content_with_nav %}
+  {% if not total_calendar %}
+    {% include 'event/script.html' %}
+  {% else %}
+    {% include 'event/script_without_study_group.html' %}
+  {% endif %}
+
+    <div class="container-fluid">
+      <div class="row">
+        {% include "navbar.html" %}
+
+        {% if not total_calendar %}
+          {% include "sub_navbar.html" %}
+        {% endif %}
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <!--<h1 class="page-header">{{ study_group.name }}</h1>
+          <p>{{ study_group.details }}</p>-->
+
+          <div id='calendar'></div>
+        </div>
+      </div>
+    </div>
+
+{% endblock %}

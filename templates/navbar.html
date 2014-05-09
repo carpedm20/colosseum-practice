@@ -1,0 +1,50 @@
+
+<div class="col-sm-3 col-md-2 sidebar">
+  <ul class="nav nav-sidebar">
+    <li class="{% block active_student %}{% endblock %}">
+      <a href="{% url 'account:view_profile' %}?user_id={{ user.username }}">
+        <img class="img-responsive img-thumbnail" src="{{ user.student.gravatar_url }}" /> {{ user.student.get_id }}
+      </a>
+    </li>
+    {% if user.student.school %}
+      <li class="{% block active_school %}{% endblock %}">
+        <a href="{% url 'core:home' %}">
+          <!--<img class="img-thumbnail" style="width:50" src="{{ user.student.school.logo_url }}" />-->
+          <span class="glyphicon glyphicon-pencil"></span> {{ user.student.school }}
+        </a>
+      </li>
+    {% endif %}
+    <li class="{% block active_calendar %}{% endblock %}"><a href="{% url 'core:view_calendar' %}"><span class="glyphicon glyphicon-calendar"></span> Calendar</a></li>
+  </ul>
+  <ul class="nav nav-sidebar">
+    {% for study_group in user.student.study_group_set.all %}
+      <li class="">
+        <a href="{% url 'core:view_study_group' study_group.unique_id %}">
+        {% if study_group.is_private %}
+          <span class="glyphicon glyphicon-eye-close"></span> {{ study_group.name }}
+        {% else %}
+          <span class="glyphicon glyphicon-eye-open"></span> {{ study_group.name }}
+        {% endif %}
+        </a>
+      </li>
+    {% endfor %}
+    <li class="col-xs-10 col-xs-offset-1 text-center">
+      <button class="btn btn-sm btn-success btn-block"onclick="location.href='{% url 'core:create_study_group' %}'">Create group</button>
+    </li>
+
+    <li>
+      <div class="footer">
+        <div class="text-center">
+          <div class="fb-like" data-href="http://gyutae.herokuapp.com/" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
+          <br />
+          <br />
+          Copyright © 2014 두 얼간이
+        </div>
+      </div>
+    </li>
+  </ul>
+  <ul class="nav nav-sidebar">
+
+  </ul>
+</div>
+ 

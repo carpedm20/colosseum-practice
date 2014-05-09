@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content_with_nav %}
+  <script type="text/javascript"> 
+    function confirm_delete_post() {
+      var conf= confirm('Are you sure to delete this post');
+      if (conf) {
+        location.href='{% url 'delete_post' study_group_id=study_group.unique_id board_id=board_id post_id=post.id %}';
+      }
+    }
+    function confirm_delete_comment(comment_id) {
+      var conf= confirm('Are you sure to delete this comment');
+      if (conf) {
+        location.href='/s/{{ study_group.unique_id }}/board/{{ board_id }}/{{ post.id }}/comment/' + comment_id + '/delete/';
+      }
+    }
+  </script>
+    <div class="container-fluid">
+      <div class="row">
+        {% include "navbar.html" %}
+        {% include "sub_navbar.html" %}
+
+        <div class="col-sm-6 col-sm-offset-6 col-md-8 col-md-offset-4 main">
+          {% if post.creator.user == user %}
+            <button type="button" class="btn btn-warning btn-lg pull-right" onclick='confirm_delete_post();'">
+              <span class="glyphicon glyphicon-trash"></span> Delete post
+            </button>
+            <button type="button" class="btn btn-info btn-lg pull-right edit-post-btn" onclick="location.href='{% url 'edit_post' study_group_id=study_group.unique_id board_id=board_id post_id=post.id %}'">
+              <span class="glyphicon glyphicon-edit"></span> Edit post
+            </button>
+          {% endif %}
+
+          <h2>{{ post }}</h2>
+          <p>작성자 :
+          <a href="{% url 'account:view_profile' %}?user_id={{ post.creator.user.username }}">
+            {% if post.creator == user.student %}
+              <span class="badge badge-me">{{ post.creator.get_id }}</span></a>
+            {% elif post.creator in user.student.friends.all %}
+              <span class="badge badge-friend">{{ post.creator.get_id }}</span></a>
+            {% else %}
+              <span class="badge">{{ post.creator.get_id }}</span></a>
+            {% endif %}
+
+           | {{ post.created_at }}</p>
+          <p>본 사람 : 
+
+          {% for student in post.viewed_student.all %}
+            <a href="{% url 'account:view_profile' %}?user_id={{ student.user.username }}">
+            {% if student == user.student %}
+              <span class="badge badge-me">{{ student.get_id }}</span></a>, 
+            {% elif student in user.student.friends.all %}
+              <span class="badge badge-friend">{{ student.get_id }}</span></a>, 
+            {% else %}
+              <span class="badge">{{ student.get_id }}</span></a>, 
+            {% endif %}
+          {% endfor %}
+          </p>
+
+          <div class="well">
+            <h4>Content</h4>
+            {{ post.content | safe }}
+          </div>
+
+          <div class="well" style="margin-top:20px;">
+            <ul class="list-group">
+              <li href="#" class="list-group-item active">
+                <strong style="color:white;">Uploaded file</strong>
+                <span class="badge">{{ post.file_set.all | length }}</span>
+              </li>
+              {% for file in post.file_set.all %}
+              <li class="list-group-item">
+                <a href="{% url 'account:view_profile' %}?user_id={{ file.uploader.user.username }}">
+                {% if file.uploader == user.student %}
+                  <span class="badge badge-me pull-right">{{ file.uploader.get_id }}</span></a>
+                {% elif file.uploader in user.student.friends.all %}
+                  <span class="badge badge-friend pull-right">{{ file.uploader.get_id }}</span></a>
+                {% else %}
+                  <span class="badge pull-right">{{ file.uploader.get_id }}</span></a>
+                {% endif %}
+                <a href="{{ file.file_field.url }}">{{ file }}</a>
+              </li>
+              {% endfor %}
+            </ul>
+
+            {% if user.student in study_group.student_set.all %}
+              <div class="well">
+                  {% load jfutags %}
+                  {% jfu 'file/upload.html' study_group_id=study_group.unique_id post_id=post.id %}
+                <div class="block text-center">
+                  <p class="helptext">드래그 앤 드롭으로 첨부 가능 :)</p>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="">
+            <h3>Comments </h3>
+
+            {% for comment in post.comment_set.all %}
+            <div class="well">
+              {% if comment.creator.user == user %}
+                <div class="pull-right">
+                  <button type="button" class="btn btn-warning btn-sm" onclick="confirm_delete_comment({{ comment.id }})"/>Delete</button>
+                </div>
+                <div class="pull-right">
+                  <button type="button" class="btn btn-info btn-sm comment-edit-btn"/>Edit</button>
+                </div>
+              {% endif %}
+              <div class="pull-left">
+                <a href="{% url 'account:view_profile' %}?user_id={{ comment.creator.user.username }}">
+                  <img class="img-responsive img-thumbnail comment-thumbnail" src="{{ comment.creator.gravatar_middle_url }}">
+                </a>
+              </div>
+              <div class="comment-content">
+                <div class="comment-author">
+                  <a href="{% url 'account:view_profile' %}?user_id={{ comment.creator.user.username }}">
+                  {% if comment.creator == user.student %}
+                    <span class="badge badge-me">{{ comment.creator.get_id }}</span></a>
+                  {% elif comment.creator in user.student.friends.all %}
+                    <span class="badge badge-friend">{{ comment.creator.get_id }}</span></a>
+                  {% else %}
+                    <span class="badge">{{ comment.creator.get_id }}</span></a>
+                  {% endif %}
+
+                  <small>{{ comment.created_at }}</small>
+                </div>
+
+                <div class="comment-text">
+                  {{ comment.content | safe }}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+
+            {% if user.student in study_group.student_set.all %}
+              <form class="form-comment" role="form" action="{% url 'create_comment' study_group_id=study_group.unique_id board_id=board_id post_id=post.id %}" method="post"> {% csrf_token %}
+                {{ form.as_p }}
+                <input type="hidden" value="{{ next_url }}" name="next_url">
+                <button class="btn btn-sm btn-success btn-block" style="margin-bottom: 30px;" type="submit">Write comment</button>
+              </form>
+            {% endif %}
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+{% endblock %}

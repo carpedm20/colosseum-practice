@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+
+
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <title>다다</title>
+    <meta name="title" content="다다" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="http://3.bp.blogspot.com/-KBXXyz6h6RQ/U0n3gCOx3TI/AAAAAAAACnw/i_p6HkU9uRw/s1600/gyutae.png"/>
+    <!--<meta property="og:image" content="http://gyutae.herokuapp.com/media/media/gyutae.png" />-->
+    <meta property="og:url" content="http://gyutae.herokuapp.com/" />
+    <meta property="og:site_name" content="다다" />
+    <meta property="og:description" content="다다- 당신의 스터디, 안녕하신가요?" />
+    <meta property="fb:app_id" content="1441103269468905" />
+    <meta name="description" content="다다">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="keywords" content="유니스트 다다, unist, 다다" />
+
+    <!--
+    start : 2014-03-28 10:46 am
+                                   _           ____   ___
+      ___ __ _ _ __ _ __   ___  __| |_ __ ___ |___ \ / _ \
+     / __/ _` | '__| '_ \ / _ \/ _` | '_ ` _ \  __) | | | |
+    | (__ (_| | |  | |_) |  __/ (_| | | | | | |/ __/| |_| |
+     \___\__,_|_|  | .__/ \___|\__,_|_| |_| |_|_____|\___/
+                   |_|
+
+    end  : 2014-??-??
+    -->
+
+    <link href="/favicon.ico?1" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+    <link rel="image_src" type="image/jpeg" href="http://3.bp.blogspot.com/-KBXXyz6h6RQ/U0n3gCOx3TI/AAAAAAAACnw/i_p6HkU9uRw/s1600/gyutae.png" />
+    <link rel="apple-touch-icon" href="http://3.bp.blogspot.com/-KBXXyz6h6RQ/U0n3gCOx3TI/AAAAAAAACnw/i_p6HkU9uRw/s1600/gyutae.png" />
+
+
+    <link rel="stylesheet" href="http://fonts.googleapis.com/earlyaccess/nanumgothic.css" type="text/css" />
+    <link rel="stylesheet" href="http://fonts.googleapis.com/earlyaccess/hanna.css" type="text/css" />
+
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+    <!--<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />-->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+
+    <!--<link rel="stylesheet" href="{% static 'css/metro-bootstrap.css' %}">-->
+
+    <link href="{% static 'css/fullcalendar.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/fullcalendar.print.css' %}" rel="stylesheet" />
+
+    <link href="{% static 'css/custom.less' %}" rel="stylesheet/less" type="text/css" />
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="{% static 'js/jquery-ui.custom.min.js' %}"></script>
+    <!--<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.0/jquery.cookie.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.7.0/less.min.js"></script>
+
+    <!--<script src="{% static 'js/metro.min.js' %}"></script>
+    <script src="{% static 'js/metro-dropdown.js' %}"></script>-->
+
+    <script src="{% static 'js/fullcalendar.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/jquery.fileupload.js' %}" type="text/javascript"></script>
+
+    <script src="{% static 'js/custom.js' %}" type="text/javascript"></script>
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ko_KR/all.js#xfbml=1&appId=641444019231608";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+    <img alt="Gyutae logo" class="img-responsive" href="http://3.bp.blogspot.com/-KBXXyz6h6RQ/U0n3gCOx3TI/AAAAAAAACnw/i_p6HkU9uRw/s1600/gyutae.png" style="display:none;"/>
+
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid col-sm-10 col-sm-offset-1">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" style="font-family: 'Hanna', serif; font-size: 27px;" href="/">다다</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+              <li class="{% block profile %}{% endblock %}"><a href="{% url 'account:view_profile' %}?user_id={{ user.username }}">{{ user.username }}</a></li>
+              <li class="{% block active_sign_out %}{% endblock %}"><a href="{% url 'account:sign_out' %}">Sign out</a></li>
+            {% else %}
+              <li class="{% block active_sign_in %}{% endblock %}"><a href="{% url 'account:sign_in' %}">Sign in</a></li>
+            {% endif %}
+            <li><a href="{% url 'core:view_help' %}">Help</a></li>
+          </ul>
+          <form id="study_group_serach_form" class="navbar-form navbar-left" action="{% url 'core:search_study_group' %}" method="GET">
+            <input type="text" id="search_query" name="search_query" class="form-control" placeholder="스터디 검색...">
+            <button type="submit" class="btn btn-default">검색</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  {% if user.is_authenticated %}
+  	{% block content_with_nav %}
+	  {% endblock %}
+  {% else %}
+    {% block jumbotron %} {% endblock %}
+    <div class="container">
+      <div class="row">
+        {% block below_jumbotron %} {% endblock %}
+      </div>
+    </div>
+    <div class="footer">
+      <div class="container">
+        <div class="text-center">
+          {% block footer %} {% endblock %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="../../dist/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/docs.min.js"></script>-->
+  </body>
+</html>

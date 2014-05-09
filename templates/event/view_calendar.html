@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content_with_nav %}
+  {% if not total_calendar %}
+    {% include 'event/script.html' %}
+  {% else %}
+    {% include 'event/script_without_study_group.html' %}
+  {% endif %}
+
+    <div class="container-fluid">
+      <div class="row">
+        {% include "navbar.html" %}
+
+        {% if not total_calendar %}
+          {% include "sub_navbar.html" %}
+        {% endif %}
+
+        <div class="col-sm-fset-6 col-md-8 col-md-offset-4 main">
+          <!--<h1 class="page-header">{{ study_group.name }}</h1>
+          <p>{{ study_group.details }}</p>-->
+
+          <div id='calendar'></div>
+
+          {% if user.student.display_calendar_guide %}
+            <script type="text/javascript">
+
+function confirm_display_calendar_guide() {
+  if(confirm('Are you sure to stop displaying calendar guide?')) {
+    location.href="{% url 'core:no_calendar_guide' %}";
+  }
+}
+
+            </script>
+
+            <br />
+            <ul class="list-group">
+              <li class="list-group-item active">
+                <button class="btn btn-sm btn-warning pull-right" onclick="confirm_display_calendar_guide();"><span class="glyphicon glyphicon-remove"></span> 영원히 보지않기</button>
+                <b style="color: white; serif; font-size:22px;">캘린더 가이드</b>
+              </li>
+              <li class="list-group-item" id="calendar-guide-step-1">1. 빈공간 드래그 or 클릭 : 새 이벤트 만들기<span class="glyphicon glyphicon-ok pull-right hide"></span></li>
+              <li class="list-group-item" id="calendar-guide-step-2">2. 번호 입력 : 이벤트 멤버에게 할당하기<span class="glyphicon glyphicon-ok pull-right hide"></span</li>
+              <li class="list-group-item" id="calendar-guide-step-3">3. 이벤트 드래그 : 날짜 변경하기<span class="glyphicon glyphicon-ok pull-right hide"></span</li>
+              <li class="list-group-item" id="calendar-guide-step-4">4. 이벤트 클릭 : 이벤트 삭제하기<span class="glyphicon glyphicon-ok pull-right hide"></span</li>
+            </ul>
+          {% endif %}
+
+
+        </div>
+      </div>
+    </div>
+
+{% endblock %}

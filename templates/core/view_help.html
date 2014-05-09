@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content_with_nav %}
+  <script type="text/javascript">
+    function confirm_delete_comment(comment_id) {
+      var conf= confirm('Are you sure to delete this comment');
+      if (conf) {
+        location.href='/s/0/board/0/{{ post.id }}/comment/' + comment_id + '/delete/';
+      }
+    }
+  </script>
+
+
+
+  <div class="col-xs-10 col-xs-offset-2">
+
+    <div class="text-center">
+      <h1 style="font-family: 'Hanna', serif; font-size: 50px;">피드백 환영 :)</h1>
+    </div>
+
+    <div class="col-xs-10 container-fluid">
+      <div class="row">
+        {% include "navbar.html" %}
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <!--<h1 class="page-header">Welcome {{ user.username }}!</h1>-->
+
+            {% for comment in post.comment_set.all %}
+            <div class="well">
+              {% if comment.creator.user == user %}
+                <div class="pull-right">
+                  <button type="button" class="btn btn-warning btn-sm" onclick="confirm_delete_comment({{ comment.id }})"/>Delete</button>
+                </div>
+              {% endif %}
+              <div class="pull-left">
+                <img class="img-responsive img-thumbnail comment-thumbnail" src="{{ comment.creator.gravatar_middle_url }}">
+              </div>
+              <div class="comment-content">
+                <div class="comment-author">
+                  <span class="name"><a href=#" rel="external nofollow" class="url">{{ comment.creator }}</a></span>
+                  <small>{{ comment.created_at }}</small>
+                </div>
+
+                <div class="comment-text">
+                  {{ comment.content | safe }}
+                </div>
+              </div>
+           </div>
+           {% endfor %}
+
+          <form class="form-comment" role="form" action="{% url 'create_comment' study_group_id='0' board_id='0' post_id=post.id %}" method="post"> {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" value="{{ next_url }}" name="next_url">
+            <button class="btn btn-sm btn-success btn-block" style="margin-bottom: 30px;" type="submit">Write comment</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+{% endblock %}

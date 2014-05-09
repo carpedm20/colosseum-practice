@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block active_sign_in%}
+	{% block inner_active_sign_in %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+    <div class="jumbotron">
+      <div class="container">
+        {% block jumbotron %} {% endblock %}
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        {% block below_jumbotron %} {% endblock %}
+      </div>
+    </div>
+	<div class="footer">
+	  <div class="container">
+		<div class="text-center">
+	      {% block footer %} {% endblock %}
+		</div>
+	  </div>
+    </div>
+{% endblock %}

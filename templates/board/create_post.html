@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content_with_nav %}
+
+    <div class="container-fluid">
+      <div class="row">
+        {% include "navbar.html" %}
+
+        {% include "sub_navbar.html" %}
+
+        <div class="col-sm-6 col-sm-offset-6 col-md-8 col-md-offset-4 main">
+          {% if post_id %}
+            <form class="form-horizontal" role="form" action="{% url 'edit_post' study_group_id=study_group.unique_id board_id=board_id post_id=post_id %}" method="post"> {% csrf_token %}
+              {{ form.as_p }}
+              <input type="hidden" value="{{ next_url }}" name="next_url">
+              <button class="btn btn-lg btn-success btn-block" type="submit">Edit post</button>
+          {% else %}
+            <form class="form-horizontal" role="form" action="{% url 'create_post' study_group_id=study_group.unique_id board_id=board_id %}" method="post"> {% csrf_token %}
+              {{ form.as_p }}
+              <input type="hidden" value="{{ next_url }}" name="next_url">
+              <button class="btn btn-lg btn-success btn-block" type="submit">Create post</button>
+          {% endif %}
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+
+{% endblock %}

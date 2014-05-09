@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block active_sign_in%}active{% endblock %}
+
+{% block below_jumbotron %}
+
+<div class="container container-login">
+  <div class="row">
+    <div class="col-sm-6 col-sm-offset-3">
+      <form class="form-signin" role="form" action="{% url 'account:sign_in' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" value="{{ next_url }}" name="next_url">
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+
+      <br />
+      <div class="well">
+      <h1 style="font-family: 'Nanum Pen Script', serif; font-size: 50px;">{{ say }}</h1>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="container">
+    <div class="text-center">
+      Copyright © 2014 두 얼간이
+    </div>
+  </div>
+</div>
+{% endblock %}

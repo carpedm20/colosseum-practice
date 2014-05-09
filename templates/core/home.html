@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content_with_nav %}
+
+    <div class="container-fluid">
+      <div class="row">
+        {% include "navbar.html" %}
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <!--<h1 class="page-header">Welcome {{ user.username }}!</h1>-->
+
+          {% include 'core/list_group_event.html' with student=user.student %}
+
+          <div class="list-group">
+            <div class="list-group-item active">
+              <h4 class="list-group-item-heading">
+                Study Group list
+              </h4>
+            </div>
+            {% for group in study_group_list %}
+              {% include 'core/list_group_item_study_group.html' %}
+            {% endfor %}
+          </div>
+
+          <div class="list-group">
+            <div class="list-group-item active">
+              <h4 class="list-group-item-heading">
+                User list
+              </h4>
+            </div>
+            {% for student in student_list %}
+              <div class="list-group-item">
+                <form role="form" action="{% url 'account:follow' %}" method="post">
+                  {% csrf_token %}
+                  <input type="hidden" value="{{ student }}" name="username">
+                    {% if student.isFriend %}
+                  <button type="submit" class="student-follow-btn btn btn-success btn-lg pull-right">
+                      <span class="glyphicon glyphicon-star"></span> Friend
+                    {% else %}
+                  <button type="submit" class="student-follow-btn btn btn-primary btn-lg pull-right">
+                      <span class="glyphicon glyphicon-star-empty"></span> Follow
+                    {% endif %}
+                  </button>
+                </form>
+
+                <h4 class="list-group-item-heading">
+                  <a href="{% url 'account:view_profile' %}?user_id={{ student.user.username }}"> {{ student }} </a>
+                </h4>
+                <p class="list-group-item-text">
+                  {{ student.school }} | 
+
+                  {% for study_group in student.studygroup_set.all %}
+                    {% if not study_group.is_private %}
+                      <a href="{% url 'core:view_study_group' study_group.unique_id %}">{{ study_group }}</a>, 
+                    {% endif %}
+                  {% endfor %}
+                </p>
+
+                <!--<span class="glyphicon glyphicon-chevron-right"></span>
+                <span class="badge">{{ group.student_set.all | length }}</span>-->
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock %}

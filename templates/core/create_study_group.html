@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Create study group{% endblock %}
+
+{% block create_study_group %}active{% endblock %}
+
+{% block content_with_nav %}
+
+    <div class="container-fluid">
+      <div class="row">
+        {% include "navbar.html" %}
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <form class="form-signin" role="form" action="{% url 'core:create_study_group' %}" method="post"> {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" value="{{ next_url }}" name="next_url">
+            <button class="btn btn-lg btn-success btn-block" type="submit">Create Group</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+{% endblock %}

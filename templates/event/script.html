@@ -1,0 +1,219 @@
+<script type="text/javascript"> 
+
+var border_color = '#378006'
+
+$(document).ready(function() {
+  var student_list = [];
+  var email_list = [];
+
+  {% for student in study_group.student_set.all %}
+    student_list.push("{{ student.get_id }}");
+    email_list.push("{{ student }}");
+  {% endfor %}
+
+  var options = "";
+
+  for (var i=0; i<student_list.length; i++) {
+    options += (i+1) + " : " + student_list[i] + "  ";
+  }
+  
+  var date = new Date();
+  var d = date.getDate();
+  var m = date.getMonth();
+  var y = date.getFullYear();
+  
+  var calendar = $('#calendar').fullCalendar({
+    header: {
+      left: 'prev,next today',
+      center: 'title',
+      //right: 'month',//,agendaWeek',
+    },
+
+    eventColor: border_color,
+
+    {% if user.student in study_group.student_set.all %}
+
+    editable: true,
+    selectable: true,
+    selectHelper: true,
+
+    select: function(start, end, allDay) {
+      var title = prompt('Event Title:');
+
+      $('#calendar-guide-step-1>span').removeClass('hide');
+
+      if (title) {
+        var option = prompt(options+':');
+
+        if (option != "")
+          $('#calendar-guide-step-2>span').removeClass('hide');
+
+        var assigned_list = [];
+        option = option.split(',')
+
+        var assigned_list_as_string = "";
+
+        for (var i=0; i<option.length; i++) {
+          var num = parseInt(option[i] - 1);
+          if (num > option.length || num < 0)
+            continue;
+          assigned_list.push(email_list[num]);
+          assigned_list_as_string += student_list[num] + " ,";
+        }
+
+        if (option.length > 0)
+          assigned_list_as_string = assigned_list_as_string.substr(0, assigned_list_as_string.length - 2);
+
+        var start_date = $.fullCalendar.formatDate(start,"yyyy-MM-dd-hh-mm");
+        var end_date = $.fullCalendar.formatDate(end,"yyyy-MM-dd-hh-mm");
+
+        calendar.fullCalendar('renderEvent',
+          {
+            title: title + " - " + assigned_list_as_string,
+            start: start,
+            end: end,
+            allDay: allDay,
+          },
+          true // make the event "stick"
+        );
+        jQuery.post(
+          '{% url 'create_event' study_group_id=study_group.unique_id %}',
+          {
+            title: title,
+            start: start_date,
+            end: end_date,
+            allDay: allDay,
+            assigned_list: assigned_list.toString(),
+          }
+        );
+
+        //location.href = "{% url 'core:view_study_group' study_group_id=study_group.unique_id %}";
+      }
+      calendar.fullCalendar('unselect');
+    },
+    /*eventSources: [
+      {
+        url: '{% url 'get_event' study_group.unique_id %}',
+        type: 'POST',
+        data: {
+          student_list: student_list,
+        },
+        success: function(doc) {
+          var events = [];
+          x=events;
+          $(doc).find('event').each(function() {
+          events.push({
+              title: $(this).attr('title'),
+              start: $(this).attr('start') // will be parsed
+            });
+          });
+          //callback(events);
+        },
+        error: function() {
+          //alert('there was an error while fetching events!');
+        },
+        //color: 'yellow',   // a non-ajax option
+        textColor: 'black' // a non-ajax option
+      }
+    ],*/
+    eventClick: function(calEvent, jsEvent, view) {
+      $(this).css('border-color', 'red');
+
+      var title = calEvent.title.split('-')[0].trim();
+      var isDelete = confirm('Are you sure to delete "' + title + '"');
+      
+      if (isDelete) {
+        jQuery.post(
+          '{% url 'delete_event' study_group_id=study_group.unique_id %}',
+          {
+            id: calEvent.id,
+          }
+        );
+        $('#calendar-guide-step-4>span').removeClass('hide');
+
+        $(this).remove()
+      } else {
+        $(this).css('border-color', border_color);
+      }
+      //alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+      //alert('View: ' + view.name);
+
+      // change the border color just for fun
+    },
+    eventDrop: function(event, dayDelta, minuteDelta, allDay, revertFunc) {
+      if (!confirm("Are you sure about this change?")) {
+        revertFunc();
+      } else {
+        jQuery.post(
+          '{% url 'edit_event' study_group_id=study_group.unique_id %}',
+          {
+            id: event.id,
+            dayDelta: dayDelta,
+            minuteDelta: minuteDelta,
+          }
+        );
+
+        $('#calendar-guide-step-3>span').removeClass('hide');
+      }
+    },
+
+    {% endif %}
+    events: function(start, end, callback) {
+      $.ajax({
+        url: '{% url 'get_event' study_group.unique_id %}',
+        dataType: 'json',
+        data: {
+          // our hypothetical feed requires UNIX timestamps
+          //start: Math.round(start.getTime() / 1000),
+          //end: Math.round(end.getTime() / 1000)
+        },
+        success: function(data) {
+          var events = [];
+          $(data).each(function() {
+            var student_list = $(this).attr('student_list');
+            student_list = student_list.split(',')
+
+            var student_list_as_string = '';
+
+            for(var i=0; i<student_list.length; i++) {
+              student_list[i] = student_list[i].split('@')[0];
+              student_list_as_string += student_list[i] + ", ";
+            }
+
+            if (student_list.length > 0)
+              student_list_as_string = student_list_as_string.substr(0, student_list_as_string.length - 2);
+
+            if ($(this).attr('finished')) {
+              events.push({
+                // title: $(this).attr('title') + "\r\n" + student_list,
+                id: $(this).attr('id'),
+                unique_id: $(this).attr('unique_id'),
+                title: $(this).attr('title') + " - " + student_list_as_string,
+                start: $(this).attr('start'),
+                end: $(this).attr('end'),
+                allDay: $(this).attr('allDay'),
+                //student_list: $(this).attr('student_list'),
+                className: 'event-finished',
+              });
+            } else {
+              events.push({
+                // title: $(this).attr('title') + "\r\n" + student_list,
+                id: $(this).attr('id'),
+                unique_id: $(this).attr('unique_id'),
+                title: $(this).attr('title') + " - " + student_list_as_string,
+                start: $(this).attr('start'),
+                end: $(this).attr('end'),
+                allDay: $(this).attr('allDay'),
+                //student_list: $(this).attr('student_list'),
+              });
+            }
+          });
+          callback(events);
+        }
+      });
+    },
+  });
+  
+});
+
+</script>

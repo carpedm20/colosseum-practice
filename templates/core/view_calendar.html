@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content_with_nav %}
+  {% if not total_calendar %}
+    {% include 'event/script.html' %}
+  {% else %}
+    {% include 'event/script_without_study_group.html' %}
+  {% endif %}
+
+    <div class="container-fluid">
+      <div class="row">
+        {% include "navbar.html" %}
+
+        {% if not total_calendar %}
+          {% include "sub_navbar.html" %}
+        {% endif %}
+
+        <div class="col-sm-fset-6 col-md-8 col-md-offset-4 main">
+          <!--<h1 class="page-header">{{ study_group.name }}</h1>
+          <p>{{ study_group.details }}</p>-->
+
+          <div id='calendar'></div>
+
+          <div class="well">
+            1. 빈공간 드래그 or 클릭 : 새 이벤트 만들기
+            2. 번호 입력 : 이벤트 멤버에게 할당하기
+            3. 이벤트 클릭 : 이벤트 삭제하기
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+{% endblock %}

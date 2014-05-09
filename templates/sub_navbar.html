@@ -1,0 +1,104 @@
+<script type="text/javascript">
+    function confirm_delete_study_group() {
+      var conf= confirm('Are you sure to delete this study group');
+      if (conf) {
+        location.href='{% url 'core:delete_study_group' study_group_id=study_group.unique_id %}';
+      }
+    }
+</script>
+       <div class="col-sm-3 col-sm-offset-3 col-md-2 col-md-offset-2 sidebar inner-sidebar">
+            <ul class="nav nav-list">
+                <li class="nav-header text-center">
+                  <h4><a href="{% url 'core:view_study_group' study_group.unique_id %}">{{ study_group.name }}</a></h4>
+                </li>
+                <!--<li class="nav-header"><a href="#">Users</a></li>-->
+                {% for student in study_group.student_set.all %}
+                  <li class="dropdown">
+                    <a class="dropdown-toggle sub_nav_gravatar" href="#" data-toggle="dropdown"><img src="{{ student.gravatar_small_url }}" />
+                      {{ student.get_id }}
+                      {% if student in study_group.leader.all %}
+                        <span class="glyphicon glyphicon-tower"></span>
+                      {% endif %}
+                      <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                      {% for event in student.assigned_to.all %}
+                        {% if event in study_group.event_set.all %}
+                          {% if event.study_group == study_group %}
+                            <li>
+                              {% if student in event.finished_student.all %}
+                                {% if student == user.student %}
+                                  <a href="{% url 'unfinish_event' study_group_id=study_group.unique_id event_id=event.id %}"><span class="glyphicon glyphicon-ok"></span> {{ event }}</a>
+                                {% else %}
+                                  <a href="#"><span class="glyphicon glyphicon-ok"></span> {{ event }}</a>
+                                {% endif %}
+                              {% else %}
+                                {% if student == user.student %}
+                                  <a href="{% url 'finish_event' study_group_id=study_group.unique_id event_id=event.id %}"><span class=""></span> {{ event }}</a>
+                                {% else %}
+                                  <a href="#"><span class=""></span> {{ event }}</a>
+                                {% endif %}
+                              {% endif %}
+                            </li>
+                          {% endif %}
+                        {% endif %}
+                      {% endfor %}
+                      <li><a href="{% url 'account:view_profile' %}?user_id={{ student.user.username }}">View profile</a></li>
+                    </ul>
+                  </li>
+                {% endfor %}
+                <li class="nav-header"><a href="{% url 'core:view_study_group' study_group_id=study_group.unique_id %}"><span class="glyphicon glyphicon-calendar"></span> Calendar</a></li>
+                <li class="nav-header"><a href="{% url 'view_file_list' study_group_id=study_group.unique_id %}"><span class="glyphicon glyphicon-file"></span> File list</a></li>
+              {% for board in study_group.board_set.all %}
+                <!--<li class="dropdown">-->
+                  <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ board }}<b class="caret"></b></a>-->
+                  <li class="nav-header">{{ board }}</li>
+                  <!--<ul class="dropdown-menu">-->
+                    {% for post in board.post_set.all %}
+                      <li><a href="{% url 'view_post' study_group_id=study_group.unique_id post_id=post.id board_id=board.id %}">{{ post.name }}</a></li>
+                    {% endfor %}
+                    {% if user.student in study_group.student_set.all %}
+                      <li><a href="{% url 'create_post' study_group.unique_id board.id %}"><span class="glyphicon glyphicon-plus"></span> Add post</a></li>
+                    {% endif %}
+                  <!--</ul>-->
+                <!--</li>-->
+              {% endfor %}
+              {% if user.student in study_group.student_set.all %}
+                <li>
+                  <button class="btn btn-sm btn-info btn-block" onclick="location.href='{% url 'create_board' study_group_id=study_group.unique_id %}'">Add Board</button>
+                </li>
+              {% endif %}
+              <li>
+                <form role="form" action="{% url 'core:join_study_group' %}" method="post">
+                  {% csrf_token %}
+                  <input type="hidden" value="{{ study_group.unique_id }}" name="group_unique_id">
+                  {% if user.student not in study_group.student_set.all %}
+                    <button class="btn btn-sm btn-primary btn-block delete-study-group-btn">Join study group</button>
+                  {% else %}
+                    <button class="btn btn-sm btn-warning btn-block delete-study-group-btn">Leave study group</button>
+                  {% endif %}
+                </form>
+              </li>
+              {% if user.student in study_group.leader.all %}
+                <li>
+                  <button class="btn btn-sm btn-danger btn-block delete-study-group-btn" onclick="confirm_delete_study_group()">Delete study group</button>
+                </li>
+              {% endif %}
+            </ul>
+
+          <!--Drop down version
+          <ul class="nav nav-sidebar">
+            {% for board in study_group.user_set.all %}
+            {% endfor %}
+            {% for board in study_group.board_set.all %}
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ board }}<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  {% for post in board.post_set.all %}
+                    <li><a href="#">{{ post.name }}</a></li>
+                  {% endfor %}
+                </ul>
+              </li>
+            {% endfor %}
+          <ul>-->
+        </div>
